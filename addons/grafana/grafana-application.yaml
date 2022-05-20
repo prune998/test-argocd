@@ -12,5 +12,17 @@ spec:
     helm:
       releaseName: grafana-operator
   destination:
-    server: "https://kubernetes.default.svc"
+    server: 'https://172.23.0.3:6443'
     namespace: grafana
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        maxDuration: 3m0s
+        factor: 2

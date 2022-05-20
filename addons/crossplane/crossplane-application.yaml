@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-aws-eks 
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+spec:
+  project: addons
+  source:
+    repoURL: git@github.com:prune998/test-argocd.git
+    targetRevision: HEAD
+    path: charts/crossplane
+  destination:
+    server: 'https://172.23.0.3:6443'
+    namespace: crossplane
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 1m
