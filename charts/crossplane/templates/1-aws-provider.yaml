@@ -1,20 +1,11 @@
 ---
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: crossplane-provider-aws
-  annotations:
-    argocd.argoproj.io/sync-wave: "30"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true 
-spec:
-  package: "crossplane/provider-aws:v0.27.0"
-  controlerConfigRef:
-    name: aws-config
----
 apiVersion: pkg.crossplane.io/v1alpha1
 kind: ControllerConfig
 metadata:
   name: aws-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true 
 #  annotations:
 #    eks.amazonaws.com/role-arn: arn:aws:iam::231961042942:role/sebastian-thomas-eks
 spec:
@@ -25,6 +16,18 @@ spec:
   securityContext:
     runAsUser: 0
 ---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: crossplane-provider-aws
+  annotations:
+    argocd.argoproj.io/sync-wave: "40"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true 
+spec:
+  package: "crossplane/provider-aws:v0.27.0"
+  controllerConfigRef:
+    name: aws-config
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -32,7 +35,7 @@ metadata:
   annotations:
     argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
-    argocd.argoproj.io/sync-wave: "40"
+    argocd.argoproj.io/sync-wave: "50"
 spec:
   template:
     spec:
