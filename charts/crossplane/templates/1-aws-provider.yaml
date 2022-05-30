@@ -7,8 +7,23 @@ metadata:
     argocd.argoproj.io/sync-wave: "30"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true 
 spec:
-  package: "public.ecr.aws/awsvijisarathy/crossplane-provider-aws:v0.27.0"
-
+  package: "crossplane/provider-aws:v0.27.0"
+  controlerConfigRef:
+    name: aws-config
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-config
+#  annotations:
+#    eks.amazonaws.com/role-arn: arn:aws:iam::231961042942:role/sebastian-thomas-eks
+spec:
+  podSecurityContext:
+    fsGroup: 2000
+  args:
+  - '--debug'
+  securityContext:
+    runAsUser: 0
 ---
 apiVersion: batch/v1
 kind: Job
